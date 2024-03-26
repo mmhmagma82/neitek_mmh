@@ -18,7 +18,7 @@
                 @foreach (var goalData in _getGoals)
                 {
                     <li class="list-group-item d-flex justify-content-between align-items-start">
-                        <div class="row" @onclick="()=>GetTasks(goalData)">
+                        <div class="row" @onclick="GetTasks">
                             <div class="col-10" style="padding:5px; background-color:white; font-weight:bolder;">
                                 @goalData.Name
                             </div>
@@ -268,7 +268,7 @@
                 if (_getGoals != null && _getGoals.Count() > 0)
                 {
                     _currentGoal = _getGoals.FirstOrDefault();
-                    GetTasks(_currentGoal);
+                    GetTasks();
                 }
                 await InvokeAsync(StateHasChanged);
             }
@@ -278,11 +278,12 @@
         }
     }
 
-    public async void GetTasks(GoalVM data)
+    public async void GetTasks()
     {
+        //GoalVM data
         try
         {
-            _currentGoal = data;
+            //_currentGoal = data;
             var response = await _client.PostAsJsonAsync("admingoals/alltasks", new TaskVM() { GoalId = _currentGoal.Id });
             if (response.IsSuccessStatusCode)
             {
@@ -302,7 +303,7 @@
 
     private async Task<GridDataProviderResult<TaskVM>> TasksDataProvider(GridDataProviderRequest<TaskVM> request)
     {
-        if (_getTasks is null) GetTasks(_currentGoal);
+        if (_getTasks is null) GetTasks();
         return await Task.FromResult(request.ApplyTo(_getTasks));
     }
 
@@ -473,7 +474,7 @@
                 };
             var response = await _client.PostAsJsonAsync("admingoals/savetask", _taskData);
             if (response.IsSuccessStatusCode)
-                GetTasks(_currentGoal);
+                GetTasks();
         }
         catch (Exception)
         {
@@ -515,7 +516,7 @@
                 };
             var response = await _client.PostAsJsonAsync("admingoals/savetask", _taskData);
             if (response.IsSuccessStatusCode)
-                GetTasks(_currentGoal);
+                GetTasks();
             await removeTask.HideAsync();
         }
         catch (Exception)

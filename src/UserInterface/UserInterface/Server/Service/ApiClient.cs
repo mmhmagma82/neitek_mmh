@@ -60,10 +60,7 @@ namespace UserInterface.Server.Service
             try
             {
                 var client = GetClient(service, uri);
-                if (service == "bxc")
-                    response = client.GetAsync(client.BaseAddress).Result;
-                else
-                    response = client.GetAsync(uri).Result;
+                response = client.GetAsync(uri).Result;
                 response.EnsureSuccessStatusCode();
                 var json = response.Content.ReadAsStringAsync().Result;
                 result.Data = JsonConvert.DeserializeObject<TResult>(json);
