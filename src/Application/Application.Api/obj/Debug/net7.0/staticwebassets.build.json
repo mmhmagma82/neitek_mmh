@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "8u7dSfSZ/qgiCRaeqjyqJwkVx0Lvvtsx4UbI2+weWH0=",
+  "Source": "Application.Api",
+  "BasePath": "_content/Application.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "Application.Api\\wwwroot",
+      "Source": "Application.Api",
+      "ContentRoot": "D:\\Martin\\Proyectos\\Neitek\\src\\Application\\Application.Api\\wwwroot\\",
+      "BasePath": "_content/Application.Api",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}

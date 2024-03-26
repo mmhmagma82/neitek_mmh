@@ -1,0 +1,17 @@
+﻿CREATE VIEW vw_api_user AS 
+SELECT apiuserId AS apiuserId, role AS role, username AS username, password AS password, project AS project, applicant AS applicant, expires AS expires
+FROM adm_api_user;
+
+CREATE VIEW vw_goal AS
+SELECT goalid Id, name GoalName, register_date Register, total_tasks Tasks, percentege Progress,
+ISNULL((SELECT TOP 1 COUNT(taskid) FROM adm_task WHERE goalid = goalid AND stateid = 2 GROUP BY goalid),0) AS Complete
+FROM adm_goal
+
+CREATE VIEW vw_task AS
+SELECT 
+	tas.taskid AS Id, tas.name AS TaskName, tas.register_date AS Register, tas.is_important AS Important,
+	goa.goalid AS GoalId, goa.name AS GoalName, goa.register_date AS GoalRegister, goa.total_tasks AS GoalTasks, goa.percentege AS GoalPercentege,
+	sta.stateid AS StateId, sta.name AS StateName
+FROM adm_task tas
+INNER JOIN adm_goal goa ON tas.goalid = goa.goalid
+INNER JOIN adm_state sta ON tas.stateid = sta.stateid

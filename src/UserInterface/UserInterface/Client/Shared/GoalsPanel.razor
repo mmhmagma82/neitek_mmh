@@ -1,0 +1,533 @@
+﻿@using Common.Model;
+@using Newtonsoft.Json;
+@inject HttpClient _client
+
+<div class="row">
+    <div class="col-4" style="padding:10px; background-color:white;">
+        <button type="button" class="btn btn-success btn-sm" style="background-color:#336666 !important;" @onclick="OnNewGoalClick">
+            <span class="oi oi-plus"></span>&nbsp;&nbsp;Nueva meta
+        </button>
+        <br /><br />
+        @if (_getGoals == null)
+        {
+            <p><em>Buscando metas...</em></p>
+        }
+        else
+        {
+            <ol class="list-group list-group-numbered">
+                @foreach (var goalData in _getGoals)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="row" @onclick="()=>GetTasks(goalData)">
+                            <div class="col-10" style="padding:5px; background-color:white; font-weight:bolder;">
+                                @goalData.Name
+                            </div>
+                            <div class="col-2" style="padding:5px; background-color:white; text-align:right;">
+                                <span class="oi oi-pencil" style="cursor:pointer;" @onclick="() => OnEditGoalClick(goalData)"></span>&nbsp&nbsp
+                                <span class="oi oi-trash" style="cursor:pointer;" @onclick="() => OnRemoveGoalClick(goalData)"></span>
+                            </div>
+                            <div class="col-12 text-black" style="padding:5px; background-color:white; padding-left:15px; font-size:.9em;">
+                                Fecha creada:  @goalData.RegisterDate.ToString("dd/MM/yyyy")
+                            </div>
+                            <div class="col-10 text-black-50" style="padding:5px; background-color:white; font-size:.8em;">
+                                Tareas completadas: @goalData.CompleteTasks/@goalData.Tasks
+                            </div>
+                            <div class="col-2" style="padding:5px; background-color:white; text-align:right; font-size:.8em;">
+                                @goalData.Progress.ToString("##.00") %
+                            </div>
+                            <div class="col-12 text-black" style="padding:5px; background-color:white; padding-left:15px; font-size:.9em;">
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: @goalData.Progress%" aria-valuenow="@goalData.Progress" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ol>
+        }
+    </div>
+
+    <div class="col-8" style="padding:5px; background-color:white;">
+        @if (_getTasks == null)
+        {
+            <p><em>Buscando tareas...</em></p>
+        }
+        else
+        {
+            <div class="col-12" style="margin-bottom:20px;">
+                <button type="button" class="btn btn-success btn-sm" style="background-color:#336666 !important;" @onclick="OnNewTaskClick">
+                    <span class="oi oi-plus"></span>&nbsp;&nbsp;Agregar tarea
+                </button>
+                <button type="button" class="btn btn-success btn-sm @_ocultaCompleta" style="background-color:#336666 !important;" @onclick="OnCompleteTaskClick">
+                    <span class="oi oi-check"></span>&nbsp;&nbsp;Completar tarea
+                </button>
+                <button type="button" class="btn btn-success btn-sm @_ocultaEditar" style="background-color:#336666 !important;" @onclick="OnEditTaskClick">
+                    <span class="oi oi-pencil"></span>&nbsp;&nbsp;Editar
+                </button>
+                <button type="button" class="btn btn-success btn-sm @_ocultaElimina" style="background-color:#336666 !important;" @onclick="OnRemoveTaskClick">
+                    <span class="oi oi-trash"></span>&nbsp;&nbsp;Eliminar
+                </button>
+            </div>
+
+            <div class="col-12">
+                <Grid TItem="TaskVM" class="table table-sm table-hover table-bordered table-striped" DataProvider="TasksDataProvider" 
+                        AllowSorting="true" AllowPaging="true" AllowFiltering="true" PageSize="5" Responsive="true" EmptyText="No hay tareas"
+                        AllowSelection="true" HeaderRowCssClass="bg-success text-white border-bottom-0" FiltersRowCssClass="bg-success text-white bg-opacity-25 border-bottom-0"
+                        SelectedItemsChanged="OnSelectedItemsChanged" >
+                    <GridColumn TItem="TaskVM" HeaderText="" TextAlignment="Alignment.Center" FilterTextboxWidth="0" Filterable="false" Sortable="false" style="width:10%;">
+                        @if (context.IsImportant)
+                        {
+
+                            <button type="button" class="btn btn-light btn-sm" @onclick="() => OnImportantTaskClick(context)">
+                                <span class="oi oi-star" style="color:darkorange; font-size:1.3em;" ></span>
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-light  btn-sm" @onclick="() => OnImportantTaskClick(context)">
+                                <span class="oi oi-star" style="color:dimgray; font-size:1.3em;" ></span>
+                            </button>
+                            
+                        }
+                    </GridColumn>
+                    <GridColumn TItem="TaskVM" HeaderText="Tarea" PropertyName="Name" StringComparison="StringComparison.Ordinal" style="width:60%;" Sortable="true" SortKeySelector="item => item.Name">
+                        @context.Name
+                    </GridColumn>
+                    <GridColumn TItem="TaskVM" HeaderText="Fecha" PropertyName="RegisterDate" style="width:15%;" TextAlignment="Alignment.Center" Sortable="true" SortKeySelector="item => item.RegisterDate">
+                        @context.RegisterDate.ToString("dd/MM/yyyy")
+                    </GridColumn>
+                    <GridColumn TItem="TaskVM" HeaderText="Estado" PropertyName="StateName" StringComparison="StringComparison.Ordinal" style="width:15%;" Sortable="true" SortKeySelector="item => item.StateName">
+                        @if (context.StateId == (int)TaskState.Open)
+                        {
+                            @context.StateName
+                        }
+                        else
+                        {
+                            <span class="text-success" style="font-weight:bolder;">@context.StateName</span>
+                        }
+                    </GridColumn>
+                </Grid>
+            </div>
+        }
+    </div>
+</div>
+
+
+<Modal @ref="newGoal" Title="" IsVerticallyCentered="true" UseStaticBackdrop="true" CloseOnEscape="false" ShowCloseButton="false">
+    <BodyTemplate>
+        <div class="row" style="background-color:#336666 !important; color:white; margin-top:-16px; ">
+            <div class="col-11" style="padding:5px; font-size:.8em;">
+                Agregar nueva meta
+            </div>
+            <div class="col-1" style="padding:5px; text-align:right; font-size:.8em;">
+                <span class="oi oi-x" @onclick="OnHideNewModalClick" style="cursor:pointer; font-size:.8em;"></span>
+            </div>
+        </div>
+        <div class="row" style="margin-top:40px; margin-bottom:30px;">
+            <div class="col-2" style="padding:5px;">
+                Nombre:
+            </div>
+            <div class="col-10" style="padding:5px;">
+                <InputText @bind-Value="@_currentGoal.Name" style="width:100%;" />
+            </div>
+        </div>
+        <div class="row" style="margin-top:20px; margin-bottom:20px;">
+            <div class="col-12 text-center" style="padding:5px;">
+                <button type="button" class="btn btn-success btn-sm" style="background-color:#336666 !important; width:100px;" @onclick="OnSaveGoalModalClick">
+                    Aceptar
+                </button>
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-secondary btn-sm" style="background-color:white !important; color:dimgray; width:100px;" @onclick="OnHideNewModalClick">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </BodyTemplate>
+</Modal>
+
+<Modal @ref="removeGoal" Title="" IsVerticallyCentered="true" UseStaticBackdrop="true" CloseOnEscape="false" ShowCloseButton="false">
+    <BodyTemplate>        
+        <div class="row" style="margin-top:40px; margin-bottom:30px;">
+            <div class="col-12" style="padding:5px; font-size:2.5em; color:dimgray; text-align:center;">
+                ¿Está seguro?
+            </div>
+            <div class="col-12" style="padding:5px; text-align:center;">
+                Que desea eliminar el elemento <span style="font-weight:bold">@_currentGoal.Name</span>
+            </div>
+        </div>
+        <div class="row" style="margin-top:20px; margin-bottom:20px;">
+            <div class="col-12 text-center" style="padding:5px;">
+                <button type="button" class="btn btn-success btn-sm" style="background-color:#336666 !important; width:100px;" @onclick="OnSaveRemoveModalClick">
+                    Aceptar
+                </button>
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-secondary btn-sm" style="background-color:white !important; color:dimgray; width:100px;" @onclick="OnHideRemoveModalClick">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </BodyTemplate>
+</Modal>
+
+<Modal @ref="newTask" Title="" IsVerticallyCentered="true" UseStaticBackdrop="true" CloseOnEscape="false" ShowCloseButton="false">
+    <BodyTemplate>
+        <div class="row" style="background-color:#336666 !important; color:white; margin-top:-16px; ">
+            <div class="col-11" style="padding:5px; font-size:.8em;">
+                Agregar tarea
+            </div>
+            <div class="col-1" style="padding:5px; text-align:right; font-size:.8em;">
+                <span class="oi oi-x" @onclick="OnHideNewTaskModalClick" style="cursor:pointer; font-size:.8em;"></span>
+            </div>
+        </div>
+        <div class="row" style="margin-top:40px; margin-bottom:30px;">
+            <div class="col-2" style="padding:5px;">
+                Nombre:
+            </div>
+            <div class="col-10" style="padding:5px;">
+                <InputText @bind-Value="@_currentTask.Name" style="width:100%;" />
+            </div>
+        </div>
+        <div class="row" style="margin-top:20px; margin-bottom:20px;">
+            <div class="col-12 text-center" style="padding:5px;">
+                <button type="button" class="btn btn-success btn-sm" style="background-color:#336666 !important; width:100px;" @onclick="OnSaveTaskModalClick">
+                    Aceptar
+                </button>
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-secondary btn-sm" style="background-color:white !important; color:dimgray; width:100px;" @onclick="OnHideNewTaskModalClick">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </BodyTemplate>
+</Modal>
+
+
+<Modal @ref="removeTask" Title="" IsVerticallyCentered="true" UseStaticBackdrop="true" CloseOnEscape="false" ShowCloseButton="false">
+    <BodyTemplate>        
+        <div class="row" style="margin-top:40px; margin-bottom:30px;">
+            <div class="col-12" style="padding:5px; font-size:2.5em; color:dimgray; text-align:center;">
+                ¿Está seguro?
+            </div>
+            <div class="col-12" style="padding:5px; text-align:center;">
+                Que desea eliminar el elemento <span style="font-weight:bold">@_currentTask.Name</span>
+            </div>
+        </div>
+        <div class="row" style="margin-top:20px; margin-bottom:20px;">
+            <div class="col-12 text-center" style="padding:5px;">
+                <button type="button" class="btn btn-success btn-sm" style="background-color:#336666 !important; width:100px;" @onclick="OnSaveRemoveTaskClick">
+                    Aceptar
+                </button>
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-secondary btn-sm" style="background-color:white !important; color:dimgray; width:100px;" @onclick="OnHideRemoveTaskClick">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </BodyTemplate>
+</Modal>
+
+@code {
+    Grid<TaskVM> grid;
+    private HashSet<TaskVM> selectedTasks = new();
+
+    private List<GoalVM> _getGoals = new List<GoalVM>();
+    private List<TaskVM> _getTasks = new List<TaskVM>();
+
+    private GoalVM _currentGoal = new GoalVM();
+    private TaskVM _currentTask = new TaskVM();
+
+    private Modal newGoal = default!;
+    private Modal removeGoal = default!;
+
+    private Modal newTask = default!;
+    private Modal removeTask = default!;
+
+    private string _ocultaCompleta = "d-none";
+    private string _ocultaEditar = "d-none";
+    private string _ocultaElimina = "d-none";
+
+    protected override Task OnInitializedAsync()
+    {
+
+        _getTasks = new List<TaskVM>();
+        GetGoals();
+        return base.OnInitializedAsync();
+    }
+
+    public async void GetGoals()
+    {
+        try
+        {
+            var response = await _client.PostAsJsonAsync("admingoals/allgoals", new GoalVM());
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                _getGoals = JsonConvert.DeserializeObject<List<GoalVM>>(responseBody);
+
+                //Obtener las tareas de la primera meta si existe
+                if (_getGoals != null && _getGoals.Count() > 0)
+                {
+                    _currentGoal = _getGoals.FirstOrDefault();
+                    GetTasks(_currentGoal);
+                }
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    public async void GetTasks(GoalVM data)
+    {
+        try
+        {
+            _currentGoal = data;
+            var response = await _client.PostAsJsonAsync("admingoals/alltasks", new TaskVM() { GoalId = _currentGoal.Id });
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                _getTasks = JsonConvert.DeserializeObject<List<TaskVM>>(responseBody);
+
+                //Obtener las tareas de la primera meta si existe
+                if (_getTasks != null && _getTasks.Count() > 0)
+                    _currentTask = _getTasks.FirstOrDefault();
+                await grid.RefreshDataAsync();
+            }
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    private async Task<GridDataProviderResult<TaskVM>> TasksDataProvider(GridDataProviderRequest<TaskVM> request)
+    {
+        if (_getTasks is null) GetTasks(_currentGoal);
+        return await Task.FromResult(request.ApplyTo(_getTasks));
+    }
+
+    private Task OnSelectedItemsChanged(HashSet<TaskVM> tasks)
+    {
+        _ocultaCompleta = "d-none";
+        if (tasks.Count() == 0)
+            _ocultaEditar = _ocultaElimina = "d-none";            
+
+        //Con una que encuentre abierta muestra el boton de completar
+        foreach (TaskVM item in tasks)
+            if (item.StateId == (int)TaskState.Open)
+                _ocultaCompleta = "";
+
+        if(tasks.Count() > 0)
+        {
+            _ocultaEditar = _ocultaElimina = string.Empty;
+            _currentTask = tasks.FirstOrDefault();
+        }
+        selectedTasks = tasks is not null && tasks.Any() ? tasks : new();
+
+        InvokeAsync(StateHasChanged);
+
+        return Task.CompletedTask;
+    }
+
+
+    #region Agregar o editar una meta
+    private async Task OnNewGoalClick()
+    {
+        _currentGoal = new GoalVM();
+        await newGoal.ShowAsync();
+    }
+
+    private async Task OnEditGoalClick(GoalVM data)
+    {
+        //Obtenemos el id y nombre de la meta
+        _currentGoal = new GoalVM() { Id = data.Id, Name = data.Name };
+        await newGoal.ShowAsync();
+    }
+
+    private async Task OnSaveGoalModalClick()
+    {
+        //Enviamos a la base de datos la aprobación para crear o editar la meta
+        try
+        {
+            GoalVM _goalData = new GoalVM()
+                {
+                    Id = _currentGoal.Id,
+                    Name = _currentGoal.Name,
+                    Operation = _currentGoal.Id == 0 ? (int)OperationsList.New : (int)OperationsList.Update
+                };
+            var response = await _client.PostAsJsonAsync("admingoals/savegoal", _goalData);
+            if (response.IsSuccessStatusCode)
+                GetGoals();
+            await newGoal.HideAsync();
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    private async Task OnHideNewModalClick()
+    {
+        await newGoal.HideAsync();
+    }
+
+    #endregion
+
+    #region EliminarMeta
+
+    private async Task OnRemoveGoalClick(GoalVM data)
+    {
+        //Obtenemos el id y el nombre de la meta a eliminar
+        _currentGoal = new GoalVM() { Id = data.Id, Name = data.Name };
+        await removeGoal.ShowAsync();
+    }
+
+    private async Task OnSaveRemoveModalClick()
+    {
+        //Enviamos la solicitud de eliminacion a la base de datos
+        try
+        {
+            GoalVM _goalData = new GoalVM()
+                {
+                    Id = _currentGoal.Id,
+                    Name = _currentGoal.Name,
+                    Operation = (int)OperationsList.Delete
+                };
+            var response = await _client.PostAsJsonAsync("admingoals/savegoal", _goalData);
+            if (response.IsSuccessStatusCode)
+                GetGoals();
+            await removeGoal.HideAsync();
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    private async Task OnHideRemoveModalClick()
+    {
+        await removeGoal.HideAsync();
+    }
+
+    #endregion
+
+
+    #region Agregar o editar tarea
+    private async Task OnNewTaskClick()
+    {
+        _currentTask = new TaskVM();
+        await newTask.ShowAsync();
+    }
+
+    private async Task OnCompleteTaskClick()
+    {
+        foreach (var emp in selectedTasks)
+        {
+            _currentTask = emp;
+            _currentTask.StateId = (int)TaskState.Closed;
+            _currentTask.StateName = EnumData.GetEnumDescription(TaskState.Closed);
+            _currentTask.Operation = (int)OperationsList.Update;
+            try
+            {
+                var response = await _client.PostAsJsonAsync("admingoals/savetask", _currentTask);
+            }
+            catch (Exception)
+            {
+            }
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnImportantTaskClick(TaskVM task)
+    {
+        task.IsImportant = task.IsImportant == true ? false : true;
+        task.Operation = (int)OperationsList.Update;
+        try
+        {
+            var response = await _client.PostAsJsonAsync("admingoals/savetask", task);
+        }
+        catch (Exception)
+        {
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnEditTaskClick()
+    {
+        await InvokeAsync(StateHasChanged);
+        await newTask.ShowAsync();
+    }
+
+    private async Task OnSaveTaskModalClick()
+    {
+        //Enviamos a la base de datos la aprobación para crear o editar la meta
+        try
+        {
+            await newTask.HideAsync();
+            TaskVM _taskData = new TaskVM()
+                {
+                    Id = _currentTask.Id,
+                    Name = _currentTask.Name,
+                    IsImportant = _currentTask.IsImportant,
+                    StateId = _currentTask.StateId,
+                    GoalId = _currentGoal.Id,
+                    Operation = _currentTask.Id == 0 ? (int)OperationsList.New : (int)OperationsList.Update
+                };
+            var response = await _client.PostAsJsonAsync("admingoals/savetask", _taskData);
+            if (response.IsSuccessStatusCode)
+                GetTasks(_currentGoal);
+        }
+        catch (Exception)
+        {
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnHideNewTaskModalClick()
+    {
+        await newTask.HideAsync();
+    }
+
+    #endregion
+
+
+    #region CompletarEliminarTarea
+
+    private async Task OnRemoveTaskClick()
+    {
+        //Obtenemos el id y el nombre de la meta a eliminar
+        //_currentTask = new TaskVM() { Id = data.Id, Name = data.Name };
+        foreach (TaskVM item in selectedTasks)
+            _currentTask = item;
+        await InvokeAsync(StateHasChanged);
+        await removeTask.ShowAsync();
+    }
+
+    private async Task OnSaveRemoveTaskClick()
+    {
+        //Enviamos la solicitud de eliminacion a la base de datos
+        try
+        {
+            TaskVM _taskData = new TaskVM()
+                {
+                    Id = _currentTask.Id,
+                    Name = _currentTask.Name,
+                    GoalId = _currentGoal.Id,
+                    Operation = (int)OperationsList.Delete
+                };
+            var response = await _client.PostAsJsonAsync("admingoals/savetask", _taskData);
+            if (response.IsSuccessStatusCode)
+                GetTasks(_currentGoal);
+            await removeTask.HideAsync();
+        }
+        catch (Exception)
+        {
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnHideRemoveTaskClick()
+    {
+        await removeTask.HideAsync();
+    }
+
+    #endregion
+}

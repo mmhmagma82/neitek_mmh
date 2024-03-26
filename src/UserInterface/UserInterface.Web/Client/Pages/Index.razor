@@ -1,0 +1,142 @@
+﻿@using Common.Model;
+@using Newtonsoft.Json;
+@inject HttpClient _client
+@page "/"
+
+<PageTitle>Control de metas</PageTitle>
+
+<div class="row">
+    <div class="col-12 border-start border-success border-5" style="padding:10px; background-color:white;">
+        Control de metas
+    </div>
+</div>
+
+<div class="row" style="height:10px; background-color:transparent;"></div>
+
+<div class="row">
+    <div class="col-4" style="padding:10px; background-color:white;">
+
+
+        <button type="button" class="btn btn-success btn-sm" @onclick="OnShowModalClick" style="background-color:#336666 !important;">
+            <span class="oi oi-plus"></span>&nbsp;&nbsp;Nueva meta pues
+        </button>
+        <br /><br />
+
+        @if (_getGoals == null)
+        {
+            <p><em>Buscando metas...</em></p>
+        }
+        else
+        {
+            <ol class="list-group list-group-numbered">
+                @foreach (var forecast in _getGoals)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="row">
+                            <div class="col-10" style="padding:5px; background-color:white; font-weight:bolder;">
+                                @forecast.Name
+                            </div>
+                            <div class="col-2" style="padding:5px; background-color:white; text-align:right;">
+                                <span class="oi oi-pencil"></span>&nbsp&nbsp
+                                <span class="oi oi-trash"></span>
+                            </div>
+                            <div class="col-12 text-black" style="padding:5px; background-color:white; padding-left:15px; font-size:.9em;">
+                                Fecha creada:  @forecast.RegisterDate.ToString("dd/MM/yyyy")
+                            </div>
+                            <div class="col-10 text-black-50" style="padding:5px; background-color:white; font-size:.8em;">
+                                Tareas completadas: @forecast.CompleteTasks/@forecast.Tasks
+                            </div>
+                            <div class="col-2" style="padding:5px; background-color:white; text-align:right; font-size:.8em;">
+                                @forecast.Progress %
+                            </div>
+                            <div class="col-12 text-black" style="padding:5px; background-color:white; padding-left:15px; font-size:.9em;">
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: @forecast.Progress%" aria-valuenow="@forecast.Progress" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ol>
+        }
+    </div>
+    <div class="col-8" style="padding:5px; background-color:white;">
+        col-8
+    </div>
+</div>
+
+<Modal @ref="modal" Title="Agregar nueva meta" IsVerticallyCentered="true">
+    <BodyTemplate>
+        <div class="mb-3">
+            <label class="form-label">Nombre:</label>
+            <InputText @bind-Value="@_newGoal" />
+        </div>
+    </BodyTemplate>
+    <FooterTemplate>
+        <Button Color="ButtonColor.Primary" @onclick="OnSaveGoalModalClick">Aceptar</Button>
+        <Button Color="ButtonColor.Secondary" @onclick="OnHideModalClick">Cancelar</Button>
+    </FooterTemplate>
+</Modal>
+
+@code {
+    private List<GoalVM> _getGoals = new List<GoalVM>();
+    private string _newGoal = string.Empty;
+    private Modal modal = default!;
+
+    protected override Task OnInitializedAsync()
+    {
+        GetGoals();
+        return base.OnInitializedAsync();
+    }
+
+    private async void GetGoals()
+    {
+        try
+        {
+            var response = await _client.PostAsJsonAsync("admingoals/allgoals", new GoalVM());
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                _getGoals = JsonConvert.DeserializeObject<List<GoalVM>>(responseBody);
+                StateHasChanged();
+            }
+        }
+        catch (Exception)
+        {
+            _getGoals = new List<GoalVM>();
+        }
+    }
+
+    private async Task OnShowModalClick()
+    {
+        await modal.ShowAsync();
+    }
+
+    private async Task OnSaveGoalModalClick()
+    {
+        try
+        {
+            var response = await _client.PostAsJsonAsync("admingoals/savegoal", new GoalVM() { Name = _newGoal });
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                if (JsonConvert.DeserializeObject<int>(responseBody) == (int)MessageList.Success)
+                    GetGoals();
+                else
+                {
+                    //Mostrar mensaje de error
+                }
+            }
+            
+        }
+        catch (Exception)
+        {
+            _getGoals = new List<GoalVM>();
+        }
+    }
+
+    private async Task OnHideModalClick()
+    {
+        await modal.HideAsync();
+    }
+}

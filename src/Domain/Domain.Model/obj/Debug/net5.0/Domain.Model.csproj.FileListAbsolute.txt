@@ -1,0 +1,15 @@
+C:\Martin\Proyectos\Wilmar\src\Domain\Domain.Model\bin\Debug\net5.0\Domain.Model.deps.json
+C:\Martin\Proyectos\Wilmar\src\Domain\Domain.Model\bin\Debug\net5.0\Domain.Model.dll
+C:\Martin\Proyectos\Wilmar\src\Domain\Domain.Model\bin\Debug\net5.0\ref\Domain.Model.dll
+C:\Martin\Proyectos\Wilmar\src\Domain\Domain.Model\bin\Debug\net5.0\Domain.Model.pdb
+C:\Martin\Proyectos\Wilmar\src\Domain\Domain.Model\bin\Debug\net5.0\Common.Model.dll
+C:\Martin\Proyectos\Wilmar\src\Domain\Domain.Model\bin\Debug\net5.0\Common.Model.pdb
+C:\Martin\Proyectos\Wilmar\src\Domain\Domain.Model\obj\Debug\net5.0\Domain.Model.csproj.AssemblyReference.cache
+C:\Martin\Proyectos\Wilmar\src\Domain\Domain.Model\obj\Debug\net5.0\Domain.Model.GeneratedMSBuildEditorConfig.editorconfig
+C:\Martin\Proyectos\Wilmar\src\Domain\Domain.Model\obj\Debug\net5.0\Domain.Model.AssemblyInfoInputs.cache
+C:\Martin\Proyectos\Wilmar\src\Domain\Domain.Model\obj\Debug\net5.0\Domain.Model.AssemblyInfo.cs
+C:\Martin\Proyectos\Wilmar\src\Domain\Domain.Model\obj\Debug\net5.0\Domain.Model.csproj.CoreCompileInputs.cache
+C:\Martin\Proyectos\Wilmar\src\Domain\Domain.Model\obj\Debug\net5.0\Domain.Model.csproj.CopyComplete
+C:\Martin\Proyectos\Wilmar\src\Domain\Domain.Model\obj\Debug\net5.0\Domain.Model.dll
+C:\Martin\Proyectos\Wilmar\src\Domain\Domain.Model\obj\Debug\net5.0\ref\Domain.Model.dll
+C:\Martin\Proyectos\Wilmar\src\Domain\Domain.Model\obj\Debug\net5.0\Domain.Model.pdb

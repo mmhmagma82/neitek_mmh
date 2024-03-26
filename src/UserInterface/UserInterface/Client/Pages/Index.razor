@@ -1,0 +1,27 @@
+﻿@page "/"
+<PageTitle>Neitek</PageTitle>
+
+<style>
+    body {
+        background-color: whitesmoke;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12 border-start border-success border-5" style="padding:10px; background-color:white;">
+        Control de metas
+    </div>
+</div>
+
+<div class="row" style="height:10px; background-color:transparent;"></div>
+
+<GoalsPanel />
+
+@code{
+    public int _metaId = 0;
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+}

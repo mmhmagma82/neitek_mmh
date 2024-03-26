@@ -1,0 +1,12 @@
+D:\Martin\Proyectos\Neitek\src\UserInterface\UserInterface.Web\Shared\bin\Debug\net6.0\UserInterface.Web.Shared.deps.json
+D:\Martin\Proyectos\Neitek\src\UserInterface\UserInterface.Web\Shared\bin\Debug\net6.0\UserInterface.Web.Shared.dll
+D:\Martin\Proyectos\Neitek\src\UserInterface\UserInterface.Web\Shared\bin\Debug\net6.0\UserInterface.Web.Shared.pdb
+D:\Martin\Proyectos\Neitek\src\UserInterface\UserInterface.Web\Shared\obj\Debug\net6.0\UserInterface.Web.Shared.csproj.AssemblyReference.cache
+D:\Martin\Proyectos\Neitek\src\UserInterface\UserInterface.Web\Shared\obj\Debug\net6.0\UserInterface.Web.Shared.GeneratedMSBuildEditorConfig.editorconfig
+D:\Martin\Proyectos\Neitek\src\UserInterface\UserInterface.Web\Shared\obj\Debug\net6.0\UserInterface.Web.Shared.AssemblyInfoInputs.cache
+D:\Martin\Proyectos\Neitek\src\UserInterface\UserInterface.Web\Shared\obj\Debug\net6.0\UserInterface.Web.Shared.AssemblyInfo.cs
+D:\Martin\Proyectos\Neitek\src\UserInterface\UserInterface.Web\Shared\obj\Debug\net6.0\UserInterface.Web.Shared.csproj.CoreCompileInputs.cache
+D:\Martin\Proyectos\Neitek\src\UserInterface\UserInterface.Web\Shared\obj\Debug\net6.0\UserInterface.Web.Shared.dll
+D:\Martin\Proyectos\Neitek\src\UserInterface\UserInterface.Web\Shared\obj\Debug\net6.0\refint\UserInterface.Web.Shared.dll
+D:\Martin\Proyectos\Neitek\src\UserInterface\UserInterface.Web\Shared\obj\Debug\net6.0\UserInterface.Web.Shared.pdb
+D:\Martin\Proyectos\Neitek\src\UserInterface\UserInterface.Web\Shared\obj\Debug\net6.0\ref\UserInterface.Web.Shared.dll

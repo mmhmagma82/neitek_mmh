@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "lDcfmJ8T2VCMGE4b3gYHy1iC3vtWZ9e/f8Us6VgO6wn6jU58xh3sp8QMnLwClTCp3m1BXxh+sSs94QGnpP2u+g==",
+  "success": true,
+  "projectFilePath": "D:\\Martin\\Proyectos\\Neitek\\src\\UserInterface\\UserInterface.Web\\Shared\\UserInterface.Web.Shared.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Martin\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.16\\microsoft.windowsdesktop.app.ref.6.0.16.nupkg.sha512",
+    "C:\\Users\\Martin\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.16\\microsoft.netcore.app.ref.6.0.16.nupkg.sha512",
+    "C:\\Users\\Martin\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.16\\microsoft.aspnetcore.app.ref.6.0.16.nupkg.sha512"
+  ],
+  "logs": []
+}

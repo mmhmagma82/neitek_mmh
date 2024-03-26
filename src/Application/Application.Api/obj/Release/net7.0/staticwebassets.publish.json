@@ -1,0 +1,54 @@
+{
+  "Version": 1,
+  "Hash": "Qwop0tcrxkq5lK1DHgt91uoKaN6WhmYLyn6aJ27a2jc=",
+  "Source": "Application.Api",
+  "BasePath": "_content/Application.Api",
+  "Mode": "Default",
+  "ManifestType": "Publish",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "Application.Api\\wwwroot",
+      "Source": "Application.Api",
+      "ContentRoot": "E:\\Martin\\Proyectos\\Wilmar\\src\\Application\\Application.Api\\wwwroot\\",
+      "BasePath": "_content/Application.Api",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "E:\\Martin\\Proyectos\\Wilmar\\src\\Application\\Application.Api\\wwwroot\\Emails\\NewAccount.html",
+      "SourceId": "Application.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\Martin\\Proyectos\\Wilmar\\src\\Application\\Application.Api\\wwwroot\\",
+      "BasePath": "_content/Application.Api",
+      "RelativePath": "Emails/NewAccount.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Emails\\NewAccount.html"
+    },
+    {
+      "Identity": "E:\\Martin\\Proyectos\\Wilmar\\src\\Application\\Application.Api\\wwwroot\\Emails\\NewAccountNotification.html",
+      "SourceId": "Application.Api",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\Martin\\Proyectos\\Wilmar\\src\\Application\\Application.Api\\wwwroot\\",
+      "BasePath": "_content/Application.Api",
+      "RelativePath": "Emails/NewAccountNotification.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Emails\\NewAccountNotification.html"
+    }
+  ]
+}

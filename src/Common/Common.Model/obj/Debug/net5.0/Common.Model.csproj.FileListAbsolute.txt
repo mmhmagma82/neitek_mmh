@@ -1,0 +1,12 @@
+C:\Martin\Proyectos\Wilmar\src\Common\Common.Model\bin\Debug\net5.0\Common.Model.deps.json
+C:\Martin\Proyectos\Wilmar\src\Common\Common.Model\bin\Debug\net5.0\Common.Model.dll
+C:\Martin\Proyectos\Wilmar\src\Common\Common.Model\bin\Debug\net5.0\ref\Common.Model.dll
+C:\Martin\Proyectos\Wilmar\src\Common\Common.Model\bin\Debug\net5.0\Common.Model.pdb
+C:\Martin\Proyectos\Wilmar\src\Common\Common.Model\obj\Debug\net5.0\Common.Model.csproj.AssemblyReference.cache
+C:\Martin\Proyectos\Wilmar\src\Common\Common.Model\obj\Debug\net5.0\Common.Model.GeneratedMSBuildEditorConfig.editorconfig
+C:\Martin\Proyectos\Wilmar\src\Common\Common.Model\obj\Debug\net5.0\Common.Model.AssemblyInfoInputs.cache
+C:\Martin\Proyectos\Wilmar\src\Common\Common.Model\obj\Debug\net5.0\Common.Model.AssemblyInfo.cs
+C:\Martin\Proyectos\Wilmar\src\Common\Common.Model\obj\Debug\net5.0\Common.Model.csproj.CoreCompileInputs.cache
+C:\Martin\Proyectos\Wilmar\src\Common\Common.Model\obj\Debug\net5.0\Common.Model.dll
+C:\Martin\Proyectos\Wilmar\src\Common\Common.Model\obj\Debug\net5.0\ref\Common.Model.dll
+C:\Martin\Proyectos\Wilmar\src\Common\Common.Model\obj\Debug\net5.0\Common.Model.pdb
