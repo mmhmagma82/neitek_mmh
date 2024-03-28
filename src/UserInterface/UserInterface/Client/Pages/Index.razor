@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject HttpClient _client
 <PageTitle>Neitek</PageTitle>
 
 <style>
@@ -17,11 +18,70 @@
 
 <GoalsPanel />
 
+@*
+@if (goalList == null)
+{
+    <p><em>Buscando metas...</em></p>
+}
+else
+{
+    <ol class="list-group list-group-numbered">
+        @foreach (var goalData in goalList)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="row">
+                    <div class="col-10" style="padding:5px; background-color:white; font-weight:bolder;">
+                        @goalData.Name
+                    </div>
+                    <div class="col-2" style="padding:5px; background-color:white; text-align:right;">
+                        <span class="oi oi-pencil" style="cursor:pointer;" ></span>&nbsp&nbsp
+                        <span class="oi oi-trash" style="cursor:pointer;" ></span>
+                    </div>
+                    <div class="col-12 text-black" style="padding:5px; background-color:white; padding-left:15px; font-size:.9em;">
+                        Fecha creada:  @goalData.RegisterDate.ToString("dd/MM/yyyy")
+                    </div>
+                    <div class="col-10 text-black-50" style="padding:5px; background-color:white; font-size:.8em;">
+                        Tareas completadas: @goalData.CompleteTasks/@goalData.Tasks
+                    </div>
+                    <div class="col-2" style="padding:5px; background-color:white; text-align:right; font-size:.8em;">
+                        @goalData.Progress.ToString("##.00") %
+                    </div>
+                    <div class="col-12 text-black" style="padding:5px; background-color:white; padding-left:15px; font-size:.9em;">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: @goalData.Progress%" aria-valuenow="@goalData.Progress" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        }
+    </ol>
+}*@
+
+
 @code{
-    public int _metaId = 0;
+    List<GoalVM> goalList = new List<GoalVM>();
 
     protected override Task OnInitializedAsync()
     {
+        //GetAllGoals();
         return base.OnInitializedAsync();
+    }
+
+    private async void GetAllGoals()
+    {
+        goalList = new List<GoalVM>();
+        try
+        {
+            var response = await _client.GetAsync("neitek/allgoals");
+            if (response.IsSuccessStatusCode)
+            {
+                string responseBody = await response.Content.ReadAsStringAsync();
+                goalList = JsonConvert.DeserializeObject<List<GoalVM>>(responseBody);
+            }
+            StateHasChanged();
+        }
+        catch (Exception)
+        {
+        }
     }
 }

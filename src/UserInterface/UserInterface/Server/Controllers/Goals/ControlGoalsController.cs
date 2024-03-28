@@ -16,17 +16,17 @@ namespace UserInterface.Server.Controllers.Goals
         }
 
         [HttpPost]
-        [Route("allgoals")]
-        public IActionResult GetGoals([FromBody] GoalVM goal)
+        [Route("listgoals")]
+        public List<GoalVM> GetGoals([FromBody] GoalVM goal)
         {
             try
             {
                 List<GoalVM> _getGoals = _apiClient.Post<List<GoalVM>, GoalVM>("tek", "goal/goals", goal).Data;
-                return Ok(_getGoals);
+                return _getGoals;
             }
-            catch (Exception e)
+            catch
             {
-                return BadRequest("Error: " + e.ToString());
+                return new List<GoalVM>();
             }
         }
 

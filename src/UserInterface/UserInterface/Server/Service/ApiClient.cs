@@ -17,7 +17,7 @@ namespace UserInterface.Server.Service
 
         private class LoginToken
         {
-            public string Token { get; set; }
+            //public string Token { get; set; }
         }
 
         private HttpClient GetClient(string service, string uri)
