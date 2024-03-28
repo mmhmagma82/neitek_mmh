@@ -1,5 +1,6 @@
 ﻿using Common.Model;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using UserInterface.Server.Service;
 
 namespace UserInterface.Server.Controllers.Goals
@@ -36,8 +37,11 @@ namespace UserInterface.Server.Controllers.Goals
         {
             try
             {
-                _apiClient.Post<List<GoalVM>, GoalVM>("tek", "goal/savegoal", goal);
-                return Ok();
+                var result = _apiClient.Post<string, GoalVM>("tek", "goal/savegoal", goal);
+                if (result.Code == ResponseCode.Success)
+                    return Ok();
+                else
+                    return BadRequest(result.Message);
             }
             catch (Exception e)
             {
@@ -66,8 +70,11 @@ namespace UserInterface.Server.Controllers.Goals
         {
             try
             {
-                _apiClient.Post<List<TaskVM>, TaskVM>("tek", "task/savetask", task);
-                return Ok();
+                var result = _apiClient.Post<string, TaskVM>("tek", "task/savetask", task);
+                if (result.Code == ResponseCode.Success)
+                    return Ok();
+                else
+                    return BadRequest(result.Message);
             }
             catch (Exception e)
             {

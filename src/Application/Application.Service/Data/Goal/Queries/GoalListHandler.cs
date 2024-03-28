@@ -4,6 +4,7 @@ using Common.Model;
 using Common.Model.Models;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Application.Service.Queries
 {
@@ -19,6 +20,7 @@ namespace Application.Service.Queries
         public List<GoalVM> Handle(GoalList _data)
         {
             var result = new List<GoalVM>();
+            var rtask = new List<TaskVM>();
             var conn = new SqlConnection(_queryConnectionString.Value);
             conn.Open();
             var cmd = conn.CreateCommand();

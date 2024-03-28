@@ -1,5 +1,4 @@
-﻿using Common.Model;
-using Domain.Model;
+﻿using Domain.Model;
 using Infrastructure.DataAccess.Context;
 using Infrastructure.DataAccess.SeedWork;
 
@@ -29,10 +28,10 @@ namespace Infrastructure.DataAccess.DataBaseConfig.Repositories
                 //Verificar que no exista el nombre en algun otra meta
                 _goal = _dataBase.DtGoals.Where(f => f.Name.Trim().ToLower() == Name.Trim().ToLower()).FirstOrDefault();
                 if (_goal != null && _goal.GoalId != GoalId)
-                    return null;
+                    return new Goal();
                 _goal = _dataBase.DtGoals.Find(GoalId);
             }
-            return _goal;
+            return _goal != null ? _goal : new Goal();
         }
 
         public GTask GetTaskById(int TaskId)
@@ -55,10 +54,10 @@ namespace Infrastructure.DataAccess.DataBaseConfig.Repositories
                 //Verificar que no exista el nombre en algun otra meta
                 _task = _dataBase.DtTasks.Where(f => f.Name.Trim().ToLower() == Name.Trim().ToLower()).FirstOrDefault();
                 if (_task != null && _task.TaskId != TaskId)
-                    return null;
+                    return new GTask();
                 _task = _dataBase.DtTasks.Find(TaskId);
             }
-            return _task;
+            return _task != null ? _task : new GTask();
         }
 
         public GState GetStatus(int StatusId)

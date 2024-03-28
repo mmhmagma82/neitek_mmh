@@ -23,8 +23,8 @@ namespace Application.Service.Commands
         public Result Handle(SaveGoalCommand data)
         {
             Goal _currentGoal = _repository.GetGoalByName(data.GoalData.Id, !string.IsNullOrEmpty(data.GoalData.Name) ? data.GoalData.Name.Trim() : "");
-
-            if (_currentGoal == null && data.GoalData.Operation == (int)OperationsList.New)
+            bool isSaved = false;
+            if (_currentGoal.GoalId == 0 && data.GoalData.Operation == (int)OperationsList.New)
             {
                 //Registrar la nueva meta
                 _currentGoal = new Goal()
@@ -35,28 +35,31 @@ namespace Application.Service.Commands
                     Percentege = 0
                 };
                 _repository.Add(_currentGoal);
+                isSaved= true;
             }
             
-            else if (_currentGoal != null && data.GoalData.Operation == (int)OperationsList.Update)
+            else if (_currentGoal.GoalId != 0 && data.GoalData.Operation == (int)OperationsList.Update)
             {
                 //Actualizar el nombre de la meta
                 _currentGoal.Name = !string.IsNullOrEmpty(data.GoalData.Name) ? data.GoalData.Name.Trim() : "";
+                isSaved = true;
             }
             
-            else if (_currentGoal != null && data.GoalData.Operation == (int)OperationsList.Delete)
+            else if (_currentGoal.GoalId != 0 && data.GoalData.Operation == (int)OperationsList.Delete)
             {
                 //Eliminar la meta y todas las tareas asociadas a ella
                 _repository.RemoveTaskRange(_currentGoal.GoalId);
                 _repository.Remove(_currentGoal);
+                isSaved = true;
             }
 
-            else if (_currentGoal != null && data.GoalData.Operation == (int)OperationsList.New)
-                return Result.Failure($"¡El nombre de la meta {data.GoalData.Name} ya está reistrado, por favor intente con otro!");
+            if (!isSaved)
+                return Result.Failure($"¡El nombre de la meta '{data.GoalData.Name}' ya está reistrado, por favor intente con otro!");
 
             //Aceptamos los cambios
             _repository.Save();
             //Retornamos un estatus correcto
-            return Result.Success("La meta se guardó correctamente");
+            return Result.Success(_currentGoal.GoalId.ToString());
         }
     }
 }

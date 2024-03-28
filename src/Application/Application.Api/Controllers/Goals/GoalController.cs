@@ -55,7 +55,7 @@ namespace Application.Api.Controllers.Goals
             {
                 var result = _messages.Dispatch(new SaveGoalCommand(data));
                 if (result.IsSuccess)
-                    return Ok((int)MessageList.Success);
+                    return Ok();
                 else
                     return BadRequest(result.Error);
             }

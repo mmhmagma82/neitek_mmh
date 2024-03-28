@@ -27,7 +27,7 @@ namespace Application.Service.Commands
             GTask _currentTask = _repository.GetTaskByName(data.TaskData.Id, !string.IsNullOrEmpty(data.TaskData.Name) ? data.TaskData.Name.Trim() : "");
             Goal _goal = new Goal();
 
-            if (_currentTask == null && data.TaskData.Operation == (int)OperationsList.New)
+            if (_currentTask.TaskId == 0 && data.TaskData.Operation == (int)OperationsList.New)
             {
                 //Obtener la meta asociada a la tarea
                 _goal = _repository.GetGoalById(data.TaskData.GoalId);
@@ -42,9 +42,12 @@ namespace Application.Service.Commands
                 };
                 
                 _repository.InsertTask(_currentTask);
+
+                //Aceptamos los cambios
+                _repository.Save();
             }
 
-            else if (_currentTask != null && data.TaskData.Operation == (int)OperationsList.Update)
+            else if (_currentTask.TaskId != 0 && data.TaskData.Operation == (int)OperationsList.Update)
             {
                 //Actualizar el nombre de la tarea
                 _currentTask.Name = !string.IsNullOrEmpty(data.TaskData.Name) ? data.TaskData.Name.Trim() : "";
@@ -57,8 +60,7 @@ namespace Application.Service.Commands
                 _goal.GoalId = data.TaskData.GoalId;
             }
 
-
-            else if (_currentTask != null && data.TaskData.Operation == (int)OperationsList.Delete)
+            else if (_currentTask.TaskId != 0 && data.TaskData.Operation == (int)OperationsList.Delete)
             {
                 //Eliminar la tarea
                 _repository.RemoveTask(_currentTask);
@@ -69,21 +71,26 @@ namespace Application.Service.Commands
                 _goal.GoalId = data.TaskData.GoalId;
             }
 
-            else if (_currentTask != null && data.TaskData.Operation == (int)OperationsList.New)
+            else if (_currentTask.TaskId != 0 && data.TaskData.Operation == (int)OperationsList.New)
                 return Result.Failure($"¡El nombre de la tarea {data.TaskData.Name} ya está reistrado, por favor intente con otro!");
 
             //Obtener la meta asociada a la tarea
-            _goal = _repository.GetGoalById(_goal.GoalId);
+            if(_goal.GoalId != 0)
+            {
+                _goal = _repository.GetGoalById(_goal.GoalId);
 
-            //Actualizar el porcentajes
-            List<GTask> _tasks = _repository.GetTasksByGoalId(_goal.GoalId);
+                //Actualizar el porcentajes
+                List<GTask> _tasks = _repository.GetTasksByGoalId(_goal.GoalId);
 
-            _goal.TotalTasks = _tasks.Count();
+                _goal.TotalTasks = _tasks.Count();
 
-            int _totalComplete = _tasks.Where(f => f.stateid == (int)TaskState.Closed).Count();
-            if (_totalComplete > 0)
-                _goal.Percentege = (_totalComplete * 100) / _tasks.Count();
+                int _totalComplete = _tasks.Where(f => f.stateid == (int)TaskState.Closed).Count();
+                if (_totalComplete > 0)
+                    _goal.Percentege = (_totalComplete * 100) / _tasks.Count();
+            }
 
+            if (_currentTask.TaskId == 0)
+                return Result.Failure($"El nombre de la tarea '{data.TaskData.Name}' ya está reistrado, por favor intente con otro.");
 
             //Aceptamos los cambios
             _repository.Save();
